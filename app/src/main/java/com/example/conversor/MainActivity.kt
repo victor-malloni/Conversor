@@ -14,20 +14,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        getCurrencies()
     }
+
+
 
     fun getCurrencies() {
         val retrofitClient = NetworkUtils.getRetrofitInstance("https://cdn.jsdelivr.net/")
         val endpoint = retrofitClient.create(EndPoint::class.java)
 
-        endpoint.getCurrencies().enqueue(object : Callback<JsonObject>,
-            retrofit2.Callback<JsonObject> {
+        endpoint.getCurrencies().enqueue(object : retrofit2.Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                TODO("Not yet implemented")
+                var data = mutableListOf<String>()
+
+                response.body()?.keySet()?.iterator()?.forEach {
+                    data.add(it)
+                }
+
+                println(data.count())
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                TODO("Not yet implemented")
+                println("Error callback")
             }
         })
     }
