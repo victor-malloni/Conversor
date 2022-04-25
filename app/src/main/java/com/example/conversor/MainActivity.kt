@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getCurrencies()
+
 
 
         spFrom = findViewById(R.id.spFrom)
@@ -32,7 +32,32 @@ class MainActivity : AppCompatActivity() {
         tvResult = findViewById(R.id.tvResult)
         etValueFrom = findViewById(R.id.etValueFrom)
 
+        getCurrencies()
+        btConvert.setOnClickListener {converterDinheiro()}
     }
+
+
+    fun converterDinheiro {
+        val retrofitClient = NetworkUtils.getRetrofitInstance("https://cdn.jsdelivr.net/")
+        val endpoint = retrofitClient.create(EndPoint::class.java)
+
+        endpoint.getCurrencyRate(spFrom.selectedItem.toString(), spTo.selectedItem.toString()).enqueue(object :
+            retrofit2.Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                var data =
+                    response.body()?.entrySet()?.find { it.key == spTo.selectedItem.toString() }
+                var rate: Double = data?.value.toString().toDouble()
+                var conversao= etValueFrom.text.toString().toDouble() * rate
+                //mostrar resultado
+                tvResult.setText(conversao.toString())
+            }
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                println("Erro ao converter dinheiros")
+            }
+        }
+    }
+
+
 
 
     fun getCurrencies() {
