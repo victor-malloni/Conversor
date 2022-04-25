@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun converterDinheiro {
+    fun converterDinheiro () {
         val retrofitClient = NetworkUtils.getRetrofitInstance("https://cdn.jsdelivr.net/")
         val endpoint = retrofitClient.create(EndPoint::class.java)
 
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 println("Erro ao converter dinheiros")
             }
-        }
+        })
     }
 
 
